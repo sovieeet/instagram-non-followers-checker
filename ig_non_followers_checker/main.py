@@ -1,6 +1,6 @@
 import json
 import os
-from instagram_util import get_non_followers
+from ig_non_followers_checker.instagram_util import get_non_followers
 
 def load_credentials(filename):
     with open(filename, 'r') as file:
