@@ -4,4 +4,4 @@ install:
 
 .PHONY: Run
 run: 			## Run the script
-	python ig_followers/main.py
+	python ig_non_followers_checker/main.py
