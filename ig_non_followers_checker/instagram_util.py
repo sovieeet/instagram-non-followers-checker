@@ -9,7 +9,12 @@ def get_non_followers(username, password):
     logging.info('Logging into Instagram...')
     L = instaloader.Instaloader()
     
-    L.login(username, password)
+    try:
+        L.login(username, password)
+    except instaloader.exceptions.TwoFactorAuthRequiredException:
+        logging.info('Two-factor authentication required.')
+        two_factor_code = input('Enter the 2FA code: ')
+        L.two_factor_login(two_factor_code)
     
     logging.info('Fetching user profile...')
     profile = instaloader.Profile.from_username(L.context, username)
