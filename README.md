@@ -30,18 +30,7 @@ pip install -r requirements.txt
 
 **NOTE: If you have Make installed, you can use `make install` instead**
 
-### 4. Configure Credentials:
-
-Set up the `config.json` file in the `credentials` folder with your credentials
-
-```json
-{
-    "username": "your_instagram_username",
-    "password": "your_instagram_password"
-}
-```
-
-### 5. Add Accounts to Exclude
+### 4. Add Accounts to Exclude
 
 In `excluded_accounts.py`, list the accounts you want to manually exclude from the non-followers list:
 
@@ -57,6 +46,11 @@ Run the script to generate the list of non-followers:
 python ig_non_followers_checker/main.py
 ```
 **NOTE: If you have Make installed, you can use `make run` instead**
+
+If is your first usage of the script, this will request you the credentials
+to login into your account. Provide a valid username and password. After this,
+your account credentials will be stored in a file with the namefile `session-username.instaloader` inside sessions folder to avoid multiple
+logins and Instagram detection automatization. To use another account, just delete the file and the credentials will be requested again.
 
 ## Important Note
 
