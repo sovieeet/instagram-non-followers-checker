@@ -12,7 +12,7 @@ This tool allows you to identify which accounts you follow on Instagram that do 
 
 ### 1. Clone the repository
 ```git
-git clone https://github.com/yourusername/instagram-non-followers-checker.git
+git clone https://github.com/sovieeet/instagram-non-followers-checker.git
 cd instagram-non-followers-checker
 ```
 
