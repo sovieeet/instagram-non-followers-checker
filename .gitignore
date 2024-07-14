@@ -1,6 +1,7 @@
 .venv/
 .env
 non_followers.txt
+.instaloader
 __pycache__/
 *.py[cod]
 *$py.class
