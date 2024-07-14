@@ -57,12 +57,6 @@ def get_non_followers(L, username):
         
         non_followers = followees_usernames - followers_usernames
         
-        logging.info('Manually excluded accounts:')
-        for account in excluded_accounts:
-            logging.info(account)
-            if account not in followees_usernames:
-                logging.warning(f'The excluded account {account} is not in the followees list.')
-        
         non_followers -= set(excluded_accounts)
         
         logging.info(f'Identified {len(non_followers)} non-followers (excluding manually excluded accounts).')
