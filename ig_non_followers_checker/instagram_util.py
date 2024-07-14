@@ -5,7 +5,7 @@ import time
 import os
 from excluded_accounts import excluded_accounts
 from logging_config import setup_logging
-from config import USER_AGENT, SESSION_FILE
+from config import USER_AGENT, SESSION_FILE, SESSION_DIR
 
 setup_logging()
 
@@ -14,15 +14,7 @@ def human_delay(min_seconds=3, max_seconds=10):
     time.sleep(random.uniform(min_seconds, max_seconds))
 
 def login_instaloader(L, username, password):
-    session_file = SESSION_FILE.format(username)
-    if os.path.exists(session_file):
-        logging.info(f'Loading session from file {session_file}...')
-        try:
-            L.load_session_from_file(username, session_file)
-            logging.info('Session loaded successfully.')
-            return True
-        except Exception as e:
-            logging.error(f'Failed to load session from file: {e}')
+    session_file = os.path.join(SESSION_DIR, SESSION_FILE.format(username))
     logging.info('Logging into Instagram...')
     try:
         L.login(username, password)
@@ -31,7 +23,16 @@ def login_instaloader(L, username, password):
         return True
     except Exception as e:
         logging.error(f'Failed to login: {e}')
-    return False
+        raise
+
+def verify_session(L, username):
+    try:
+        profile = instaloader.Profile.from_username(L.context, username)
+        list(profile.get_followers())
+        return True
+    except Exception as e:
+        logging.error(f'Session verification failed: {e}')
+        return False
 
 def get_non_followers(L, username):
     try:
@@ -72,7 +73,7 @@ def get_non_followers(L, username):
         logging.info('Two-factor authentication required.')
         two_factor_code = input('Enter the 2FA code: ')
         L.two_factor_login(two_factor_code)
-        L.save_session_to_file(SESSION_FILE.format(username))
+        L.save_session_to_file(os.path.join(SESSION_DIR, SESSION_FILE.format(username)))
         return get_non_followers(L, username)
 
 if __name__ == "__main__":
@@ -80,13 +81,18 @@ if __name__ == "__main__":
     L.context.user_agent = USER_AGENT
 
     username = input("Enter your Instagram username: ")
-    session_file = SESSION_FILE.format(username)
+    session_file = os.path.join(SESSION_DIR, SESSION_FILE.format(username))
     
     if os.path.exists(session_file):
         logging.info(f'Trying to load session from file {session_file}...')
         try:
             L.load_session_from_file(username, session_file)
             logging.info('Session loaded successfully.')
+
+            if not verify_session(L, username):
+                logging.error('Session verification failed. Invalidating session.')
+                os.remove(session_file)
+                raise Exception('Session verification failed')
         except Exception as e:
             logging.error(f'Failed to load session from file: {e}')
             password = input("Enter your Instagram password: ")

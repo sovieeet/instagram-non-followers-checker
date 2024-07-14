@@ -1,7 +1,8 @@
 import instaloader
 import logging
 import os
-from instagram_util import get_non_followers, login_instaloader
+import getpass
+from instagram_util import get_non_followers, login_instaloader, verify_session
 from config import USER_AGENT, SESSION_FILE, SESSION_DIR
 
 def get_username_from_session_file():
@@ -17,27 +18,33 @@ def main():
     L.context.user_agent = USER_AGENT
 
     username = get_username_from_session_file()
-    if username:
-        logging.info(f'Found session file for username: {username}')
-    else:
-        logging.info("Session file not found. Requesting username.")
-        username = input("Enter your Instagram username: ")
-
-    session_file = os.path.join(SESSION_DIR, SESSION_FILE.format(username))
+    session_file = os.path.join(SESSION_DIR, SESSION_FILE.format(username)) if username else None
     session_loaded = False
-    if os.path.exists(session_file):
+
+    if session_file and os.path.exists(session_file):
         logging.info(f'Trying to load session from file {session_file}...')
         try:
             L.load_session_from_file(username, session_file)
             logging.info('Session loaded successfully.')
-            session_loaded = True
+
+            if not verify_session(L, username):
+                logging.error('Session verification failed. Invalidating session.')
+                os.remove(session_file)
+                session_loaded = False
+            else:
+                session_loaded = True
         except Exception as e:
             logging.error(f'Failed to load session from file: {e}')
+            session_loaded = False
 
     if not session_loaded:
-        logging.info("Session not loaded. Requesting password.")
-        password = input("Enter your Instagram password: ")
-        login_instaloader(L, username, password)
+        username = input("Enter your Instagram username: ")
+        password = getpass.getpass("Enter your Instagram password: ")
+        try:
+            login_instaloader(L, username, password)
+        except Exception as e:
+            logging.error(f'Failed to login: {e}')
+            return  # Detener el script si falla el inicio de sesión
 
     non_followers = get_non_followers(L, username)
 
