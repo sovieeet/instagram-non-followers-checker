@@ -44,7 +44,7 @@ def main():
             login_instaloader(L, username, password)
         except Exception as e:
             logging.error(f'Failed to login: {e}')
-            return  # Detener el script si falla el inicio de sesión
+            return
 
     non_followers = get_non_followers(L, username)
 

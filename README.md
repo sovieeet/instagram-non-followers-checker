@@ -50,7 +50,7 @@ python ig_non_followers_checker/main.py
 If is your first usage of the script, this will request you the credentials
 to login into your account. Provide a valid username and password. Also, if you have a MFA, the script will ask you the verification code. After this,
 your account credentials will be stored in a file with the namefile `session-username.instaloader` inside sessions folder to avoid multiple
-logins and Instagram detection automatization. To use another account or if you change the username or password, just delete the file and the credentials will be requested again.
+logins and Instagram detection automatization (also it have random delay in the code to simulate human interaction). To use another account or if you change the username or password, just delete the file and the credentials will be requested again.
 
 ## Important Note
 

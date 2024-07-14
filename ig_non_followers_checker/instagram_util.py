@@ -40,13 +40,13 @@ def get_non_followers(L, username):
         profile = instaloader.Profile.from_username(L.context, username)
         logging.info(f'Logged in as: {profile.username}')
         
-        human_delay()  # Simulate human delay
+        human_delay()
         
         logging.info('Fetching followers...')
         followers = set(profile.get_followers())
         logging.info(f'Fetched {len(followers)} followers.')
         
-        human_delay()  # Simulate human delay
+        human_delay()
         
         logging.info('Fetching followees...')
         followees = set(profile.get_followees())
